@@ -3,61 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Opening...</title>
+    <title>Get Link</title>
     
     <style>
-        body { margin: 0; padding: 0; font-family: sans-serif; background: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
-        .container { padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 85%; max-width: 350px; background: #fff; }
+        body { margin: 0; padding: 0; font-family: sans-serif; background: #f8f9fa; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 85%; max-width: 350px; }
         
-        .btn { 
+        /* Button jaisa dikhne wala Link */
+        .link-btn { 
             display: none; 
-            background: #007bff; 
+            background: #27ae60; 
             color: white; 
             padding: 15px 0; 
             width: 100%; 
-            border: none; 
-            border-radius: 5px; 
+            text-decoration: none; 
+            border-radius: 8px; 
             font-size: 18px; 
             font-weight: bold; 
-            cursor: pointer; 
             margin-top: 20px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
         
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #27ae60; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        p { color: #555; }
+        
+        h2 { margin-top: 0; color: #333; }
+        p { color: #666; }
     </style>
-
+    
     <!-- MONETAG / PROPELLERADS META TAG YAHAN RAKHEIN -->
 
 </head>
 <body>
 
-    <div class="container">
+    <div class="card">
         <h2>Study Material</h2>
-        <p>Generating link...</p>
+        <p>Generating secure link...</p>
 
         <div id="loading-box">
             <div class="loader"></div>
             <p>Wait <span id="countdown">10</span>s</p>
         </div>
 
-        <button id="main-btn" class="btn" onclick="handleAndroidClick()">Open Now</button>
+        <!-- HTML LINK (AppsGeyser isko Chrome me kholega) -->
+        <a id="final-link" class="link-btn" href="#" target="_blank">Open Now</a>
     </div>
 
     <script>
-        // ========================================================
-        // 1. GPLINK (Earning Link)
-        const SHORT_LINK = "https://gplinks.co/4D9yBa"; 
-        
-        // 2. WEBSITE LINK
-        const DIRECT_LINK = "https://rarestudy.site"; 
-        // ========================================================
+        // ==========================================
+        const GPLINK = "https://gplinks.co/4D9yBa"; 
+        const WEBSITE = "https://rarestudy.site"; 
+        // ==========================================
 
-        const btn = document.getElementById('main-btn');
+        const linkBtn = document.getElementById('final-link');
         const loadingBox = document.getElementById('loading-box');
+        
+        // 24 Hour Logic
+        const storageKey = 'appsgeyser_user_v1';
+        const lastVisit = localStorage.getItem(storageKey);
+        const now = new Date().getTime();
+        
+        if (lastVisit && (now - lastVisit < 24 * 60 * 60 * 1000)) {
+            // 24h ke andar -> Website Link set karo
+            linkBtn.href = WEBSITE;
+        } else {
+            // Naya User -> GPLink set karo
+            linkBtn.href = GPLINK;
+            
+            // Click hone par time save karo
+            linkBtn.addEventListener('click', () => {
+                localStorage.setItem(storageKey, now);
+            });
+        }
 
-        // --- TIMER ---
+        // Timer
         let t = 10;
         const timer = setInterval(() => {
             t--;
@@ -65,44 +84,9 @@
             if (t <= 0) {
                 clearInterval(timer);
                 loadingBox.style.display = 'none';
-                btn.style.display = 'block';
+                linkBtn.style.display = 'block';
             }
         }, 1000);
-
-        // --- BRAHMASTRA FUNCTION (Force Chrome) ---
-        function openInChromeForcefully(url) {
-            // Hum URL se "https://" hata kar "intent://" banayenge
-            // Yeh Android ko force karega ki wo link CHROME APP me khole
-            
-            // 1. URL saaf karo (https hatao)
-            let cleanUrl = url.replace("https://", "").replace("http://", "");
-            
-            // 2. Intent URL banao (Package = com.android.chrome)
-            let intentUrl = "intent://" + cleanUrl + "#Intent;scheme=https;package=com.android.chrome;end";
-            
-            // 3. Fire!
-            window.location.href = intentUrl;
-        }
-
-        // --- LOGIC ---
-        function handleAndroidClick() {
-            const storageKey = 'final_fix_v5';
-            const lastTime = localStorage.getItem(storageKey);
-            const currentTime = new Date().getTime();
-            const OneDay = 24 * 60 * 60 * 1000; 
-
-            if (lastTime && (currentTime - lastTime < OneDay)) {
-                // SCENARIO 1: 24h ke andar wapas aaya -> Direct Site
-                // Force Chrome (Taaki Telegram Popup chal sake)
-                openInChromeForcefully(DIRECT_LINK);
-            } else {
-                // SCENARIO 2: Naya User -> GPLink
-                localStorage.setItem(storageKey, currentTime);
-                
-                // GPLink ko bhi Chrome me hi kholna behtar hai (Ads ke liye)
-                openInChromeForcefully(SHORT_LINK);
-            }
-        }
     </script>
 </body>
 </html>
