@@ -10,8 +10,8 @@
         .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); width: 85%; max-width: 350px; }
         
         .btn { 
-            display: none; /* Button pehle chhupa rahega */
-            background: #27ae60; /* Green Color */
+            display: none; 
+            background: #27ae60; 
             color: white; 
             padding: 15px 0; 
             width: 100%; 
@@ -33,6 +33,8 @@
         .timer-text { font-weight: bold; color: #d35400; }
     </style>
 
+    <!-- YAHAN APNA MONETAG/PROPELLERADS KA META TAG AUR SCRIPT RAKHEIN -->
+
 </head>
 <body>
 
@@ -45,50 +47,56 @@
             <p>Wait <span id="countdown" class="timer-text">10</span> seconds</p>
         </div>
 
-        <!-- Button -->
         <button id="main-btn" class="btn" onclick="handleUserClick()">Open Link Now</button>
     </div>
 
     <script>
         // ========================================================
-        // AAPKE LINKS SET KAR DIYE GAYE HAIN
+        // 1. GPLINK (Earning Link)
         const SHORT_LINK = "https://gplinks.co/4D9yBa"; 
-        const DIRECT_LINK = "http://rarestudy.site"; 
+        
+        // 2. DIRECT LINK (Jahan 24hr baad bhejna hai - Telegram/Website)
+        // Dhyan dein: Hamesha 'https://t.me/...' use karein (tg:// nahi)
+        const DIRECT_LINK = "https://t.me/+CODE_HERE"; 
         // ========================================================
 
         const btn = document.getElementById('main-btn');
         const loadingBox = document.getElementById('loading-box');
 
-        // --- 1. TIMER LOGIC ---
+        // --- TIMER LOGIC ---
         let t = 10;
         const timer = setInterval(() => {
             t--;
             document.getElementById('countdown').innerText = t;
             if (t <= 0) {
                 clearInterval(timer);
-                loadingBox.style.display = 'none'; // Timer hatao
-                btn.style.display = 'block';       // Button dikhao
+                loadingBox.style.display = 'none';
+                btn.style.display = 'block';
             }
         }, 1000);
 
-        // --- 2. 24 HOUR CHECK LOGIC ---
+        // --- 24 HOUR CHECK & REDIRECT LOGIC ---
         function handleUserClick() {
-            const storageKey = 'user_last_visit_date_v2';
+            const storageKey = 'user_last_visit_date_v3';
             const lastTime = localStorage.getItem(storageKey);
             const currentTime = new Date().getTime();
-            const OneDay = 24 * 60 * 60 * 1000; // 24 Ghante (ms)
+            const OneDay = 24 * 60 * 60 * 1000; 
 
             if (lastTime && (currentTime - lastTime < OneDay)) {
-                // SCENARIO: 24 Ghante nahi hue
-                // -> Direct Link par bhejo (http://rarestudy.site)
-                window.location.href = DIRECT_LINK;
+                // SCENARIO: 24 Ghante nahi hue (Direct Bhejo)
+                
+                // *** YAHAN CHANGE KIYA HAI ***
+                // window.location.href ki jagah window.open use kiya
+                // '_blank' ka matlab hai naya tab/window (System Browser)
+                window.open(DIRECT_LINK, '_blank');
+                
             } else {
-                // SCENARIO: Naya user hai ya 24h ho gaye
-                // -> Time save karo
+                // SCENARIO: Naya user / 24h done (GPLink Bhejo)
                 localStorage.setItem(storageKey, currentTime);
                 
-                // -> GPLink par bhejo (https://gplinks.co/4D9yBa)
-                window.location.href = SHORT_LINK;
+                // GPLink browser me khulne ke liye bhi window.open use kar sakte hain
+                // taaki App ke andar na khule
+                window.open(SHORT_LINK, '_blank');
             }
         }
     </script>
