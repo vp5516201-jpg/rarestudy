@@ -3,74 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Browser security bypass karne ke liye zaroori line -->
-    <meta name="referrer" content="no-referrer"> 
-    
-    <title>Link Verification</title>
+    <title>Open Link</title>
     
     <style>
-        body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: #eceff1; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
-        .card { background: white; padding: 40px 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 85%; max-width: 350px; }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .btn { display: none; background: #28a745; color: white; padding: 15px 0; width: 100%; text-decoration: none; font-size: 18px; font-weight: bold; border-radius: 8px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .btn:hover { background: #218838; }
-        .timer-text { font-size: 20px; color: #555; font-weight: 600; }
-    </style>
+        body { margin: 0; padding: 0; font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); width: 85%; max-width: 350px; }
+        
+        .btn { 
+            display: none; /* Button pehle chhupa rahega */
+            background: #27ae60; /* Green Color */
+            color: white; 
+            padding: 15px 0; 
+            width: 100%; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 18px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn:active { transform: scale(0.98); }
 
-    <!-- ================================================= -->
-    <!--  JAB PROPELLERADS SETUP HOGA, CODE YAHAN AAYEGA   -->
-    <!-- ================================================= -->
-    
-    <!-- Filhal ye khali hai. Render deploy hone ke baad hum yahan code dalenge. -->
+        .loader { border: 4px solid #e0e0e0; border-top: 4px solid #27ae60; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        h2 { margin-top: 0; color: #333; }
+        p { color: #666; font-size: 15px; }
+        .timer-text { font-weight: bold; color: #d35400; }
+    </style>
 
 </head>
 <body>
 
-    <div class="card" id="main-ui">
-        <h2 style="margin-top:0; color:#333;">Secure Link</h2>
-        <p style="color:#666;">Verifying destination...</p>
+    <div class="card">
+        <h2>Link Secure</h2>
+        <p>Please wait while we prepare your destination.</p>
 
-        <div id="loading-area">
+        <div id="loading-box">
             <div class="loader"></div>
-            <div class="timer-text">Please wait <span id="countdown">10</span>s</div>
+            <p>Wait <span id="countdown" class="timer-text">10</span> seconds</p>
         </div>
 
-        <!-- ASLI LINK -->
-        <a href="http://rarestudy.site" id="final-link" class="btn" target="_blank">Get Link</a>
+        <!-- Button -->
+        <button id="main-btn" class="btn" onclick="handleUserClick()">Open Link Now</button>
     </div>
 
     <script>
-        const link = document.getElementById('final-link');
-        const loadingArea = document.getElementById('loading-area');
-        
-        // 24 Hour Logic
-        const visitedKey = 'app_user_v1';
-        const lastVisit = localStorage.getItem(visitedKey);
-        const isRecent = lastVisit && (new Date().getTime() - lastVisit < 24*60*60*1000);
+        // ========================================================
+        // AAPKE LINKS SET KAR DIYE GAYE HAIN
+        const SHORT_LINK = "https://gplinks.co/4D9yBa"; 
+        const DIRECT_LINK = "http://rarestudy.site"; 
+        // ========================================================
 
-        if (isRecent) {
-            // Agar banda 24 ghante me aa chuka hai -> Redirect Direct
-            document.getElementById('main-ui').innerHTML = "<h3>Opening Link...</h3>";
-            window.location.replace("http://rarestudy.site");
-        } else {
-            // Naya banda -> Timer chalao
-            let t = 10;
-            const timer = setInterval(() => {
-                t--;
-                document.getElementById('countdown').innerText = t;
-                if (t <= 0) {
-                    clearInterval(timer);
-                    loadingArea.style.display = 'none';
-                    link.style.display = 'block';
-                }
-            }, 1000);
+        const btn = document.getElementById('main-btn');
+        const loadingBox = document.getElementById('loading-box');
+
+        // --- 1. TIMER LOGIC ---
+        let t = 10;
+        const timer = setInterval(() => {
+            t--;
+            document.getElementById('countdown').innerText = t;
+            if (t <= 0) {
+                clearInterval(timer);
+                loadingBox.style.display = 'none'; // Timer hatao
+                btn.style.display = 'block';       // Button dikhao
+            }
+        }, 1000);
+
+        // --- 2. 24 HOUR CHECK LOGIC ---
+        function handleUserClick() {
+            const storageKey = 'user_last_visit_date_v2';
+            const lastTime = localStorage.getItem(storageKey);
+            const currentTime = new Date().getTime();
+            const OneDay = 24 * 60 * 60 * 1000; // 24 Ghante (ms)
+
+            if (lastTime && (currentTime - lastTime < OneDay)) {
+                // SCENARIO: 24 Ghante nahi hue
+                // -> Direct Link par bhejo (http://rarestudy.site)
+                window.location.href = DIRECT_LINK;
+            } else {
+                // SCENARIO: Naya user hai ya 24h ho gaye
+                // -> Time save karo
+                localStorage.setItem(storageKey, currentTime);
+                
+                // -> GPLink par bhejo (https://gplinks.co/4D9yBa)
+                window.location.href = SHORT_LINK;
+            }
         }
-
-        // Click par cookie set
-        link.addEventListener('click', () => {
-            localStorage.setItem(visitedKey, new Date().getTime());
-        });
     </script>
 </body>
 </html>
