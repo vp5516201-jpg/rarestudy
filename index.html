@@ -6,46 +6,43 @@
     <title>Opening...</title>
     
     <style>
-        body { margin: 0; padding: 0; font-family: sans-serif; background: #f8f9fa; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
-        .card { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 85%; max-width: 350px; }
+        body { margin: 0; padding: 0; font-family: sans-serif; background: #ffffff; display: flex; justify-content: center; align-items: center; height: 100vh; text-align: center; }
+        .container { padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); width: 85%; max-width: 350px; background: #fff; }
         
-        /* Button Style */
         .btn { 
             display: none; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            background: #007bff; 
             color: white; 
             padding: 15px 0; 
             width: 100%; 
             border: none; 
-            border-radius: 50px; 
+            border-radius: 5px; 
             font-size: 18px; 
             font-weight: bold; 
             cursor: pointer; 
             margin-top: 20px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
-        .btn:active { transform: scale(0.98); }
-
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #764ba2; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        h2 { margin-top: 0; color: #333; }
-        p { color: #666; font-size: 14px; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #007bff; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 15px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        p { color: #555; }
     </style>
+
+    <!-- MONETAG / PROPELLERADS META TAG YAHAN RAKHEIN -->
 
 </head>
 <body>
 
-    <div class="card">
+    <div class="container">
         <h2>Study Material</h2>
-        <p>Generating secure link...</p>
+        <p>Generating link...</p>
 
         <div id="loading-box">
             <div class="loader"></div>
-            <p>Please wait <span id="countdown" style="font-weight:bold; color:#764ba2;">10</span>s</p>
+            <p>Wait <span id="countdown">10</span>s</p>
         </div>
 
-        <button id="main-btn" class="btn" onclick="handleSmartClick()">Open Now</button>
+        <button id="main-btn" class="btn" onclick="handleAndroidClick()">Open Now</button>
     </div>
 
     <script>
@@ -53,8 +50,8 @@
         // 1. GPLINK (Earning Link)
         const SHORT_LINK = "https://gplinks.co/4D9yBa"; 
         
-        // 2. WEBSITE LINK (Content + Telegram Popup)
-        const WEBSITE_LINK = "http://rarestudy.site"; 
+        // 2. WEBSITE LINK
+        const DIRECT_LINK = "https://rarestudy.site"; 
         // ========================================================
 
         const btn = document.getElementById('main-btn');
@@ -72,36 +69,38 @@
             }
         }, 1000);
 
-        // --- BROWSER OPENER FUNCTION (Important) ---
-        function openInChrome(url) {
-            // Ye function App ko force karega ki link Chrome me khule
-            const a = document.createElement('a');
-            a.href = url;
-            a.target = "_blank"; // External Browser Command
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+        // --- BRAHMASTRA FUNCTION (Force Chrome) ---
+        function openInChromeForcefully(url) {
+            // Hum URL se "https://" hata kar "intent://" banayenge
+            // Yeh Android ko force karega ki wo link CHROME APP me khole
+            
+            // 1. URL saaf karo (https hatao)
+            let cleanUrl = url.replace("https://", "").replace("http://", "");
+            
+            // 2. Intent URL banao (Package = com.android.chrome)
+            let intentUrl = "intent://" + cleanUrl + "#Intent;scheme=https;package=com.android.chrome;end";
+            
+            // 3. Fire!
+            window.location.href = intentUrl;
         }
 
-        // --- LOGIC: SAB KUCH CHALEGA ---
-        function handleSmartClick() {
-            const storageKey = 'final_app_user_v1';
+        // --- LOGIC ---
+        function handleAndroidClick() {
+            const storageKey = 'final_fix_v5';
             const lastTime = localStorage.getItem(storageKey);
             const currentTime = new Date().getTime();
             const OneDay = 24 * 60 * 60 * 1000; 
 
             if (lastTime && (currentTime - lastTime < OneDay)) {
-                // SCENARIO 1: 24h ke andar wapas aaya
-                // -> Direct Website khulegi (Chrome me)
-                // -> Wahan Telegram Popup bhi sahi kaam karega
-                openInChrome(WEBSITE_LINK);
+                // SCENARIO 1: 24h ke andar wapas aaya -> Direct Site
+                // Force Chrome (Taaki Telegram Popup chal sake)
+                openInChromeForcefully(DIRECT_LINK);
             } else {
-                // SCENARIO 2: Naya User (Earning Time)
+                // SCENARIO 2: Naya User -> GPLink
                 localStorage.setItem(storageKey, currentTime);
                 
-                // -> GPLink khulega (Chrome me) -> Earning Hogi
-                // -> Phir wo Website par jayega
-                openInChrome(SHORT_LINK);
+                // GPLink ko bhi Chrome me hi kholna behtar hai (Ads ke liye)
+                openInChromeForcefully(SHORT_LINK);
             }
         }
     </script>
