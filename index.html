@@ -6,37 +6,23 @@
     <title>Secure Access</title>
     
     <style>
-        /* App jaisa look dene ke liye CSS */
         body { 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             font-family: 'Roboto', sans-serif; 
             background-color: #ffffff; 
-            display: flex; 
-            flex-direction: column;
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            text-align: center;
-            user-select: none; /* Text copy na ho */
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center; 
+            height: 100vh; text-align: center;
+            user-select: none;
         }
 
-        .logo-area {
-            margin-bottom: 30px;
-        }
+        .logo-area { margin-bottom: 30px; }
         
-        /* App Icon Placeholder */
         .app-icon {
-            width: 80px;
-            height: 80px;
-            background: #4a90e2;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 40px;
-            font-weight: bold;
+            width: 80px; height: 80px;
+            background: #4a90e2; border-radius: 20px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 40px; font-weight: bold;
             box-shadow: 0 10px 20px rgba(74, 144, 226, 0.3);
             margin: 0 auto;
         }
@@ -44,97 +30,71 @@
         h2 { margin: 20px 0 5px 0; color: #333; font-size: 22px; }
         p { color: #888; font-size: 14px; margin-bottom: 30px; }
 
-        /* Timer Circle */
         .timer-circle {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #f0f0f0;
-            border-top: 4px solid #4a90e2;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #4a90e2;
-            font-size: 20px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+            width: 60px; height: 60px;
+            border: 4px solid #f0f0f0; border-top: 4px solid #4a90e2;
+            border-radius: 50%; display: flex;
+            align-items: center; justify-content: center;
+            font-weight: bold; color: #4a90e2; font-size: 20px;
+            animation: spin 1s linear infinite; margin: 0 auto;
         }
         
-        /* Stop spin when timer is done */
         .timer-circle.done {
-            animation: none;
-            border: 4px solid #4a90e2;
-            background: #e8f0fe;
+            animation: none; border: 4px solid #4a90e2; background: #e8f0fe;
         }
 
-        /* Modern Button */
         .action-btn { 
-            display: none; 
-            background: #4a90e2; 
-            color: white; 
-            padding: 16px 40px; 
-            border-radius: 50px; 
-            text-decoration: none; 
-            font-size: 16px; 
-            font-weight: 600; 
+            display: none; background: #4a90e2; color: white; 
+            padding: 16px 40px; border-radius: 50px; 
+            text-decoration: none; font-size: 16px; font-weight: 600; 
             box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
-            transition: transform 0.2s;
-            margin-top: 20px;
+            transition: transform 0.2s; margin-top: 20px;
         }
         
         .action-btn:active { transform: scale(0.95); }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
-
-    <!-- MONETAG CODE YAHAN RAKHEIN -->
-
 </head>
 <body>
 
     <div class="logo-area">
-        <div class="app-icon">S</div> <!-- S for Study, ya apna logo lagayein -->
+        <div class="app-icon">S</div>
         <h2>Study Material</h2>
         <p>Connecting to secure server...</p>
     </div>
 
-    <!-- Timer -->
     <div id="loading-ui">
         <div class="timer-circle" id="spinner">
             <span id="countdown">5</span>
         </div>
     </div>
 
-    <!-- Asli Button (Link) -->
     <a id="final-link" class="action-btn" href="#" target="_blank">Open Now</a>
 
     <script>
         // ==========================================
-        // Yahan par aapka naya Link laga diya gaya hai:
-        const GPLINK = "https://gplinks.co/4D9yBa"; 
+        // YAHAN APNA LINK DALEIN (ShrinkEarn ya Shortzon ka)
+        // Example: https://shrinkearn.com/xyz
+        const EARN_LINK = "https://shrinkearn.com/xyz"; 
         
-        // Agar user purana hai to direct is site par jayega:
+        // Purane user ke liye direct website:
         const WEBSITE = "https://rarestudy.site"; 
         // ==========================================
 
         const linkBtn = document.getElementById('final-link');
-        const loadingUi = document.getElementById('loading-ui');
         const spinner = document.getElementById('spinner');
         const countSpan = document.getElementById('countdown');
 
-        // Logic
+        // Logic (24 hours cookie)
         const storageKey = 'clean_app_v1';
         const lastVisit = localStorage.getItem(storageKey);
         const now = new Date().getTime();
         
         if (lastVisit && (now - lastVisit < 24 * 60 * 60 * 1000)) {
-            // Old User -> Website (24 ghante ke andar wapas aaya)
             linkBtn.href = WEBSITE;
         } else {
-            // New User -> GPLink (Pehli baar aaya ya 24 ghante baad)
-            linkBtn.href = GPLINK;
-            
+            linkBtn.href = EARN_LINK;
             linkBtn.addEventListener('click', () => {
                 localStorage.setItem(storageKey, now);
             });
@@ -147,11 +107,9 @@
             countSpan.innerText = t;
             if (t <= 0) {
                 clearInterval(timer);
-                
-                // UI Change
-                spinner.classList.add('done'); // Stop spinning
-                spinner.style.display = 'none'; // Hide circle
-                linkBtn.style.display = 'inline-block'; // Show button
+                spinner.classList.add('done'); 
+                spinner.style.display = 'none'; 
+                linkBtn.style.display = 'inline-block'; 
             }
         }, 1000);
     </script>
