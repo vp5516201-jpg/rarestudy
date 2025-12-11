@@ -102,7 +102,6 @@
     <!-- Timer -->
     <div id="loading-ui">
         <div class="timer-circle" id="spinner">
-            <!-- CHANGE 1: Display starts at 5 -->
             <span id="countdown">5</span>
         </div>
     </div>
@@ -112,7 +111,10 @@
 
     <script>
         // ==========================================
+        // Yahan par aapka naya Link laga diya gaya hai:
         const GPLINK = "https://gplinks.co/4D9yBa"; 
+        
+        // Agar user purana hai to direct is site par jayega:
         const WEBSITE = "https://rarestudy.site"; 
         // ==========================================
 
@@ -127,10 +129,10 @@
         const now = new Date().getTime();
         
         if (lastVisit && (now - lastVisit < 24 * 60 * 60 * 1000)) {
-            // Old User -> Website
+            // Old User -> Website (24 ghante ke andar wapas aaya)
             linkBtn.href = WEBSITE;
         } else {
-            // New User -> GPLink
+            // New User -> GPLink (Pehli baar aaya ya 24 ghante baad)
             linkBtn.href = GPLINK;
             
             linkBtn.addEventListener('click', () => {
@@ -138,8 +140,7 @@
             });
         }
 
-        // Timer
-        // CHANGE 2: Logic changed to 5 seconds
+        // Timer (5 Seconds)
         let t = 5; 
         const timer = setInterval(() => {
             t--;
